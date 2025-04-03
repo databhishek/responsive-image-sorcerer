@@ -13,6 +13,7 @@ const Index = () => {
   const [quantity, setQuantity] = useState(1);
 
   const productData = {
+    id: "dell-monitor-1",
     name: "Dell 27-inch (68.58 cm) IPS Full HD Monitor with Built-in Dual 3W Speakers | Height Adjustable Stand | AMD FreeSync | 75 Hz Refresh Rate (S2721HN, Black)",
     price: 15999,
     mrp: 25999,
@@ -24,6 +25,7 @@ const Index = () => {
     sales: "5K+ bought in past month",
     fulfilled: true,
     inStock: true,
+    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
     delivery: {
       free: true,
       date: "Friday, 4 April",

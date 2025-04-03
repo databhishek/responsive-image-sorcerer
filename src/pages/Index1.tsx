@@ -13,6 +13,7 @@ const Index = () => {
   const [quantity, setQuantity] = useState(1);
 
   const productData = {
+    id: "cricket-bat-1",
     name: "Boldfit Cricket bat Full Size Plastic bat Tennis Cricket bat Turf Tennis bat Lightweight Fiber bat Hard Plastic bat Tournament Plastic Cricket bat Standard Size Cricket Bats for Adults Fiber bat",
     price: 299,
     mrp: 999,
@@ -24,6 +25,7 @@ const Index = () => {
     sales: "3K+ bought in past month",
     fulfilled: true,
     inStock: true,
+    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
     delivery: {
       free: true,
       date: "Friday, 4 April",

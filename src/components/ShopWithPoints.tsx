@@ -2,6 +2,7 @@ import { Check, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 interface PointsProduct {
   id: string;
@@ -14,6 +15,7 @@ interface PointsProduct {
 }
 
 const ShopWithPoints = () => {
+  const { addItem } = useCart();
   const [availablePoints, setAvailablePoints] = useState(1500);
   const [products, setProducts] = useState<PointsProduct[]>([
     {
@@ -80,8 +82,16 @@ const ShopWithPoints = () => {
 
   const handleAddAllToCart = () => {
     const selectedProducts = products.filter(p => p.selected);
-    console.log("Adding to cart with points:", selectedProducts);
-    // Would implement actual cart functionality here
+    selectedProducts.forEach(product => {
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        pointsValue: product.pointsValue,
+        image: product.image,
+        quantity: 1
+      });
+    });
   };
 
   return (

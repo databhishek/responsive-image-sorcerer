@@ -1,7 +1,8 @@
-
 import { Star, MapPin, ChevronDown, Gift, Box, Truck, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "@/context/CartContext";
 
 interface DeliveryDetails {
   free: boolean;
@@ -30,6 +31,8 @@ interface ProductProps {
   inStock: boolean;
   delivery: DeliveryDetails;
   shipping: ShippingDetails;
+  id: string;
+  image: string;
 }
 
 interface ProductDetailsProps {
@@ -49,6 +52,9 @@ const ProductDetails = ({
   onBuyNow,
   onAddToWishlist
 }: ProductDetailsProps) => {
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+
   const renderRatingStars = (rating: number) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
@@ -71,6 +77,21 @@ const ProductDetails = ({
         ))}
       </div>
     );
+  };
+
+  const handleBuyNow = () => {
+    // Add main product to cart
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      pointsValue: 0,
+      image: product.image,
+      quantity: quantity
+    });
+
+    // Navigate to cart
+    navigate("/Cart");
   };
 
   return (
@@ -196,8 +217,8 @@ const ProductDetails = ({
           </Button>
           
           <Button 
-            onClick={onBuyNow}
-            className="w-full bg-[#FFA41C] hover:bg-[#FA8900] text-black font-normal rounded-full py-1"
+            onClick={handleBuyNow}
+            className="w-full bg-[#FFD814] hover:bg-[#F7CA00] text-black font-normal rounded-full py-2"
           >
             Buy Now
           </Button>
