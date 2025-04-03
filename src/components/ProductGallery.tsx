@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Play, ZoomIn } from "lucide-react";
 
@@ -6,20 +5,41 @@ const ProductGallery = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   
   const images = [
-    "/lovable-uploads/3270669f-7df0-49b4-ab67-74b651a1ca3b.png",
-    "https://m.media-amazon.com/images/I/61v7zzSB-bL._SX522_.jpg",
-    "https://m.media-amazon.com/images/I/61tQngUgL+L._SX522_.jpg",
-    "https://m.media-amazon.com/images/I/61wdsTrGSAL._SX522_.jpg",
-    "https://m.media-amazon.com/images/I/61OcEzWbQ-L._SX522_.jpg",
+    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1586210579471-c0338f287a6e?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1616849534446-9e66e4860673?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1616849534446-9e66e4860673?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&h=600&fit=crop",
   ];
 
   return (
-    <div className="flex flex-col">
+    <div className="flex gap-4">
+      {/* Thumbnails */}
+      <div className="flex flex-col gap-2">
+        {images.map((image, index) => (
+          <button
+            key={index}
+            onClick={() => setSelectedImage(index)}
+            className={`border-2 rounded-md overflow-hidden ${
+              selectedImage === index ? "border-[#FF9900]" : "border-gray-200"
+            }`}
+          >
+            <div className="h-20 w-20 flex items-center justify-center bg-white p-1">
+              <img
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+          </button>
+        ))}
+      </div>
+
       {/* Main image */}
-      <div className="relative bg-white border border-gray-200 rounded-lg mb-2 p-4 flex items-center justify-center h-[400px]">
+      <div className="relative bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center h-[400px] flex-1">
         <img
           src={images[selectedImage]}
-          alt="Boldfit Cricket bat"
+          alt="Dell Monitor"
           className="max-h-full max-w-full object-contain"
         />
         <div className="absolute bottom-2 right-2 text-sm text-gray-500 flex items-center">
@@ -31,27 +51,6 @@ const ProductGallery = () => {
             <span className="absolute top-1 left-1 text-[8px]">2 videos</span>
           </div>
         )}
-      </div>
-
-      {/* Thumbnails */}
-      <div className="grid grid-cols-5 gap-2">
-        {images.map((image, index) => (
-          <button
-            key={index}
-            onClick={() => setSelectedImage(index)}
-            className={`border-2 rounded-md overflow-hidden ${
-              selectedImage === index ? "border-[#FF9900]" : "border-gray-200"
-            }`}
-          >
-            <div className="h-20 flex items-center justify-center bg-white p-1">
-              <img
-                src={image}
-                alt={`Thumbnail ${index + 1}`}
-                className="max-h-full max-w-full object-contain"
-              />
-            </div>
-          </button>
-        ))}
       </div>
     </div>
   );

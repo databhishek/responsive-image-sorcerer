@@ -1,4 +1,3 @@
-
 import { Check, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +14,7 @@ interface PointsProduct {
 }
 
 const ShopWithPoints = () => {
+  const [availablePoints, setAvailablePoints] = useState(1500);
   const [products, setProducts] = useState<PointsProduct[]>([
     {
       id: "p1",
@@ -22,7 +22,7 @@ const ShopWithPoints = () => {
       description: "Premium quality batting gloves, perfect for both practice and matches",
       price: 599,
       pointsValue: 599,
-      image: "https://m.media-amazon.com/images/I/71jSxEeYrdL._SX522_.jpg",
+      image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=300&fit=crop",
       selected: false
     },
     {
@@ -31,7 +31,7 @@ const ShopWithPoints = () => {
       description: "Protective cricket helmet with adjustable fitting and superior comfort",
       price: 899,
       pointsValue: 899,
-      image: "https://m.media-amazon.com/images/I/61iUi8GJvXL._SX522_.jpg",
+      image: "https://images.unsplash.com/photo-1580744066811-90a3fb52256c?w=400&h=300&fit=crop",
       selected: false
     },
     {
@@ -40,7 +40,7 @@ const ShopWithPoints = () => {
       description: "Professional grade keeping gloves with enhanced grip and padding",
       price: 749,
       pointsValue: 749,
-      image: "https://m.media-amazon.com/images/I/81gVnk0fWEL._SX522_.jpg",
+      image: "https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=400&h=300&fit=crop",
       selected: false
     }
   ]);
@@ -48,23 +48,34 @@ const ShopWithPoints = () => {
   const [totalPoints, setTotalPoints] = useState(0);
 
   const toggleProductSelection = (id: string) => {
-    const updatedProducts = products.map(product => {
-      if (product.id === id) {
-        const newSelected = !product.selected;
+    const product = products.find(p => p.id === id);
+    if (!product) return;
+
+    if (!product.selected && (totalPoints + product.pointsValue > availablePoints)) {
+      return;
+    }
+
+    const updatedProducts = products.map(p => {
+      if (p.id === id) {
+        const newSelected = !p.selected;
         
-        // Update total points
         if (newSelected) {
-          setTotalPoints(prev => prev + product.pointsValue);
+          setTotalPoints(prev => prev + p.pointsValue);
         } else {
-          setTotalPoints(prev => prev - product.pointsValue);
+          setTotalPoints(prev => prev - p.pointsValue);
         }
         
-        return { ...product, selected: newSelected };
+        return { ...p, selected: newSelected };
       }
-      return product;
+      return p;
     });
     
     setProducts(updatedProducts);
+  };
+
+  const canSelectProduct = (product: PointsProduct) => {
+    if (product.selected) return true;
+    return totalPoints + product.pointsValue <= availablePoints;
   };
 
   const handleAddAllToCart = () => {
@@ -91,55 +102,61 @@ const ShopWithPoints = () => {
       
       <p className="text-sm text-gray-600 mb-4">
         Use your credit card rewards points to get these similar products at no additional cost!
-        You have <span className="font-semibold">2,500 points</span> available.
+        You have <span className="font-semibold">{availablePoints.toLocaleString()} points</span> available.
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {products.map((product) => (
-          <Card 
-            key={product.id} 
-            className={`border ${product.selected ? 'border-[#FF9900]' : 'border-gray-200'} hover:border-[#FF9900] transition-colors`}
-          >
-            <CardContent className="p-4">
-              <div className="relative mb-3">
-                <div className="h-40 flex items-center justify-center bg-white">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="max-h-full max-w-full object-contain"
-                  />
+        {products.map((product) => {
+          const isSelectable = canSelectProduct(product);
+          return (
+            <Card 
+              key={product.id} 
+              className={`border ${product.selected ? 'border-[#FF9900]' : 'border-gray-200'} 
+                ${!isSelectable && !product.selected ? 'opacity-50' : ''} 
+                ${isSelectable ? 'hover:border-[#FF9900]' : ''} transition-colors`}
+            >
+              <CardContent className="p-4">
+                <div className="relative mb-3">
+                  <div className="h-40 flex items-center justify-center bg-white">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </div>
+                  <button 
+                    onClick={() => toggleProductSelection(product.id)}
+                    disabled={!isSelectable && !product.selected}
+                    className={`absolute top-2 right-2 h-6 w-6 rounded-full border ${
+                      product.selected 
+                        ? 'bg-[#FF9900] border-[#FF9900]'
+                        : 'bg-white border-gray-300'
+                    } flex items-center justify-center ${!isSelectable && !product.selected ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  >
+                    {product.selected && <Check size={14} className="text-white" />}
+                  </button>
                 </div>
-                <button 
-                  onClick={() => toggleProductSelection(product.id)}
-                  className={`absolute top-2 right-2 h-6 w-6 rounded-full border ${
-                    product.selected 
-                      ? 'bg-[#FF9900] border-[#FF9900]'
-                      : 'bg-white border-gray-300'
-                  } flex items-center justify-center`}
-                >
-                  {product.selected && <Check size={14} className="text-white" />}
-                </button>
-              </div>
-              
-              <h3 className="font-medium text-sm mb-1 line-clamp-2">{product.name}</h3>
-              <p className="text-xs text-gray-600 mb-2 line-clamp-2">{product.description}</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <span className="text-lg font-bold">{product.pointsValue}</span>
-                  <span className="text-xs ml-1">points</span>
+                
+                <h3 className="font-medium text-sm mb-1 line-clamp-2">{product.name}</h3>
+                <p className="text-xs text-gray-600 mb-2 line-clamp-2">{product.description}</p>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="text-lg font-bold">{product.pointsValue}</span>
+                    <span className="text-xs ml-1">points</span>
+                  </div>
+                  <div className="text-xs text-gray-500 line-through">₹{product.price}</div>
                 </div>
-                <div className="text-xs text-gray-500 line-through">₹{product.price}</div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
       
       <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-4 rounded-lg">
         <div>
           <div className="text-sm text-gray-700">Total points required:</div>
-          <div className="font-bold text-xl">{totalPoints} points</div>
+          <div className="font-bold text-xl">{totalPoints.toLocaleString()} / {availablePoints.toLocaleString()} points</div>
         </div>
         
         <Button 
