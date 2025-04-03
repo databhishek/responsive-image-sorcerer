@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Search, MapPin, ChevronDown, ShoppingCart, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -80,10 +79,9 @@ const NavigationHeader = () => {
 
             <div className="relative cursor-pointer">
               <ShoppingCart size={32} className="text-white" />
-              <span className="absolute top-0 right-0 bg-[#FF9900] text-black rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">
+              <span className="absolute -top-1 -right-1 bg-[#FF9900] text-black rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">
                 0
               </span>
-              <span className="absolute bottom-0 text-xs font-bold">Cart</span>
             </div>
           </div>
 
