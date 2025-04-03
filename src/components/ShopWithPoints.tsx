@@ -121,9 +121,14 @@ const ShopWithPoints = () => {
           return (
             <Card 
               key={product.id} 
-              className={`border ${product.selected ? 'border-[#FF9900]' : 'border-gray-200'} 
-                ${!isSelectable && !product.selected ? 'opacity-50' : ''} 
-                ${isSelectable ? 'hover:border-[#FF9900]' : ''} transition-colors`}
+              className={`border cursor-pointer transition-colors ${
+                product.selected ? 'border-[#FF9900]' : 'border-gray-200'
+              } ${
+                !isSelectable && !product.selected ? 'opacity-50' : ''
+              } ${
+                isSelectable ? 'hover:border-[#FF9900]' : ''
+              }`}
+              onClick={() => isSelectable && toggleProductSelection(product.id)}
             >
               <CardContent className="p-4">
                 <div className="relative mb-3">
@@ -134,17 +139,15 @@ const ShopWithPoints = () => {
                       className="max-h-full max-w-full object-contain"
                     />
                   </div>
-                  <button 
-                    onClick={() => toggleProductSelection(product.id)}
-                    disabled={!isSelectable && !product.selected}
-                    className={`absolute top-2 right-2 h-6 w-6 rounded-full border ${
+                  <div 
+                    className={`absolute top-2 right-2 h-6 w-6 rounded-full border flex items-center justify-center ${
                       product.selected 
                         ? 'bg-[#FF9900] border-[#FF9900]'
                         : 'bg-white border-gray-300'
-                    } flex items-center justify-center ${!isSelectable && !product.selected ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    }`}
                   >
                     {product.selected && <Check size={14} className="text-white" />}
-                  </button>
+                  </div>
                 </div>
                 
                 <h3 className="font-medium text-sm mb-1 line-clamp-2">{product.name}</h3>
