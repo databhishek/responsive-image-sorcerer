@@ -7,11 +7,16 @@ const Checkout = () => {
   const { items } = useCart();
   const navigate = useNavigate();
 
-  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const totalPoints = items.reduce((sum, item) => sum + (item.pointsValue * item.quantity), 0);
+  // Separate regular items from points items
+  const regularItems = items.filter(item => item.pointsValue === 0);
+  const pointsItems = items.filter(item => item.pointsValue > 0);
+
+  // Calculate totals
+  const regularSubtotal = regularItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const totalPoints = pointsItems.reduce((sum, item) => sum + (item.pointsValue * item.quantity), 0);
   const delivery = 0;
-  const total = subtotal;
-  const amazonPayBalance = total;
+  const total = regularSubtotal;
+  const availablePoints = 1500; // Same as in ShopWithPoints
 
   return (
     <div className="min-h-screen bg-[#EAEDED]">
@@ -54,132 +59,112 @@ const Checkout = () => {
               </button>
             </div>
 
-            {/* Payment Method */}
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-lg font-medium mb-4">Payment method</h2>
-              
-              {/* Credit/Debit Cards */}
-              <div className="mb-6">
-                <h3 className="text-sm font-medium uppercase mb-4">CREDIT & DEBIT CARDS</h3>
-                <div className="space-y-4">
-                  <label className="flex items-center space-x-3">
-                    <input type="radio" name="payment" className="h-4 w-4 text-[#FF9900]" />
-                    <div>
-                      <div className="flex items-center">
-                        <span className="text-sm">Amazon Pay ICICI Bank Credit Card</span>
-                        <span className="ml-2 text-xs bg-gray-100 px-1">ending in 1017</span>
+            {/* Regular Items Payment */}
+            {regularItems.length > 0 && (
+              <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h2 className="text-lg font-medium mb-4">Payment method for regular items</h2>
+                
+                {/* Credit/Debit Cards */}
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium uppercase mb-4">CREDIT & DEBIT CARDS</h3>
+                  <div className="space-y-4">
+                    <label className="flex items-center space-x-3">
+                      <input 
+                        type="radio" 
+                        name="regularPayment" 
+                        className="h-4 w-4 text-[#FF9900]" 
+                        defaultChecked
+                      />
+                      <div>
+                        <div className="flex items-center">
+                          <span className="text-sm">Amazon Pay ICICI Bank Credit Card</span>
+                          <span className="ml-2 text-xs bg-gray-100 px-1">ending in 1017</span>
+                        </div>
+                        <div className="text-xs text-gray-500">Abhishek Singh</div>
                       </div>
-                      <div className="text-xs text-gray-500">Abhishek Singh</div>
-                    </div>
-                  </label>
+                    </label>
 
-                  <label className="flex items-center space-x-3">
-                    <input type="radio" name="payment" className="h-4 w-4 text-[#FF9900]" />
-                    <div>
-                      <div className="flex items-center">
-                        <span className="text-sm">Axis Bank Credit Card</span>
-                        <span className="ml-2 text-xs bg-gray-100 px-1">ending in 4584</span>
+                    <label className="flex items-center space-x-3">
+                      <input type="radio" name="regularPayment" className="h-4 w-4 text-[#FF9900]" />
+                      <div>
+                        <div className="flex items-center">
+                          <span className="text-sm">Axis Bank Credit Card</span>
+                          <span className="ml-2 text-xs bg-gray-100 px-1">ending in 4584</span>
+                        </div>
+                        <div className="text-xs text-gray-500">Abhishek Singh</div>
                       </div>
-                      <div className="text-xs text-gray-500">Abhishek Singh</div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Points Items Payment */}
+            {pointsItems.length > 0 && (
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h2 className="text-lg font-medium mb-4">Payment method for points items</h2>
+                
+                {/* Points Balance */}
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium mb-2">Your available points balance</h3>
+                  <label className="flex items-center space-x-3">
+                    <input 
+                      type="radio" 
+                      name="pointsPayment" 
+                      className="h-4 w-4 text-[#FF9900]" 
+                      defaultChecked 
+                    />
+                    <div>
+                      <div className="text-sm">
+                        Use {totalPoints.toLocaleString()} of your {availablePoints.toLocaleString()} available points
+                      </div>
                     </div>
                   </label>
                 </div>
               </div>
-
-              {/* Points Balance */}
-              <div className="mb-6">
-                <h3 className="text-sm font-medium mb-2">Your available balance</h3>
-                <label className="flex items-center space-x-3">
-                  <input 
-                    type="radio" 
-                    name="payment" 
-                    className="h-4 w-4 text-[#FF9900]" 
-                    defaultChecked 
-                  />
-                  <div>
-                    <div className="text-sm">
-                      Use ₹{total.toLocaleString()} of your ₹{amazonPayBalance.toLocaleString()} Docomo Points balance
-                    </div>
-                  </div>
-                </label>
-              </div>
-
-              {/* UPI */}
-              <div className="mb-6">
-                <h3 className="text-sm font-medium uppercase mb-4">UPI</h3>
-                <label className="flex items-center space-x-3">
-                  <input type="radio" name="payment" className="h-4 w-4 text-[#FF9900]" />
-                  <div>
-                    <div className="flex items-center">
-                      <span className="text-sm">Amazon Pay UPI</span>
-                    </div>
-                    <div className="text-xs text-gray-500">ICICI Bank ****85</div>
-                  </div>
-                </label>
-              </div>
-
-              {/* Other Payment Methods */}
-              <div>
-                <h3 className="text-sm font-medium mb-4">Another payment method</h3>
-                <div className="space-y-4">
-                  <label className="flex items-center space-x-3">
-                    <input type="radio" name="payment" className="h-4 w-4 text-[#FF9900]" />
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm">Credit or debit card</span>
-                      <div className="flex space-x-1">
-                        <img src="/visa.png" alt="Visa" className="h-6" />
-                        <img src="/mastercard.png" alt="Mastercard" className="h-6" />
-                        <img src="/amex.png" alt="American Express" className="h-6" />
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="flex items-center space-x-3">
-                    <input type="radio" name="payment" className="h-4 w-4 text-[#FF9900]" />
-                    <div className="flex items-center">
-                      <span className="text-sm">Net Banking</span>
-                      <select className="ml-2 text-sm border rounded px-2 py-1">
-                        <option>Choose an Option</option>
-                      </select>
-                    </div>
-                  </label>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Right Column - Order Summary */}
           <div className="lg:col-span-4">
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <Button className="w-full bg-[#FFD814] hover:bg-[#F7CA00] text-black font-normal rounded-full py-2 mb-4">
-                Use this payment method
+                Place your order
               </Button>
 
               <div className="text-xs text-gray-600 mb-6">
-                Choose a payment method to continue checking out. You'll still have a chance to review and edit your order before it's final.
+                By placing your order, you agree to Amazon's privacy notice and conditions of use.
               </div>
 
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Items:</span>
-                  <span>₹{subtotal.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Delivery:</span>
-                  <span>₹{delivery}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Total:</span>
-                  <span>₹{total.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-[#B12704]">
-                  <span>Docomo Points balance:</span>
-                  <span>-₹{total.toLocaleString()}</span>
-                </div>
+                {regularItems.length > 0 && (
+                  <>
+                    <div className="flex justify-between">
+                      <span>Regular Items:</span>
+                      <span>₹{regularSubtotal.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Delivery:</span>
+                      <span>₹{delivery}</span>
+                    </div>
+                  </>
+                )}
+                
+                {pointsItems.length > 0 && (
+                  <div className="flex justify-between text-[#FF9900]">
+                    <span>Points Items:</span>
+                    <span>{totalPoints.toLocaleString()} points</span>
+                  </div>
+                )}
+
                 <Separator className="my-2" />
+                
                 <div className="flex justify-between font-bold">
                   <span>Order Total:</span>
-                  <span>₹0.00</span>
+                  <div className="text-right">
+                    {regularSubtotal > 0 && <div>₹{regularSubtotal.toLocaleString()}</div>}
+                    {totalPoints > 0 && <div className="text-[#FF9900]">{totalPoints.toLocaleString()} points</div>}
+                  </div>
                 </div>
               </div>
             </div>
