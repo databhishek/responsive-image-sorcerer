@@ -8,36 +8,10 @@ import BreadcrumbTrail from "@/components/BreadcrumbTrail";
 import ShopWithPoints from "@/components/ShopWithPoints";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { dellMonitorData } from "@/data/dellMonitor";
 
 const Index = () => {
   const [quantity, setQuantity] = useState(1);
-
-  const productData = {
-    id: "dell-monitor-1",
-    name: "Dell 27-inch (68.58 cm) IPS Full HD Monitor with Built-in Dual 3W Speakers | Height Adjustable Stand | AMD FreeSync | 75 Hz Refresh Rate (S2721HN, Black)",
-    price: 15999,
-    mrp: 25999,
-    discount: 38,
-    rating: 4.4,
-    reviews: 2834,
-    store: "Dell",
-    tag: "monitor",
-    sales: "5K+ bought in past month",
-    fulfilled: true,
-    inStock: true,
-    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
-    delivery: {
-      free: true,
-      date: "Friday, 4 April",
-      fastestDate: "Tomorrow, 3 April",
-      timeRemaining: "12 hrs 20 mins",
-      location: "Mumbai 400017"
-    },
-    shipping: {
-      from: "Amazon",
-      by: "RetailNet India Pvt Ltd"
-    }
-  };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setQuantity(parseInt(e.target.value));
@@ -66,13 +40,13 @@ const Index = () => {
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10">
           {/* Left column - Product gallery */}
           <div className="lg:col-span-5 lg:row-span-2">
-            <ProductGallery />
+            <ProductGallery images={dellMonitorData.images} />
           </div>
 
           {/* Middle column - Product details */}
           <div className="lg:col-span-7">
             <ProductDetails 
-              product={productData}
+              product={dellMonitorData}
               quantity={quantity}
               onQuantityChange={handleQuantityChange}
               onAddToCart={handleAddToCart}
@@ -89,7 +63,16 @@ const Index = () => {
         
         {/* Shop with Points section */}
         <div className="mt-8 mb-12">
-          <ShopWithPoints />
+          <ShopWithPoints 
+            products={dellMonitorData.relatedProducts} 
+            mainProduct={{
+              id: dellMonitorData.id,
+              name: dellMonitorData.name,
+              price: dellMonitorData.price,
+              image: dellMonitorData.images[0],
+              quantity: quantity
+            }}
+          />
         </div>
       </main>
     </div>
@@ -107,7 +90,7 @@ const FrequentlyBoughtTogether = () => {
           <div className="relative border border-gray-200 p-4 rounded-md bg-gray-50">
             <div className="h-32 w-32 flex items-center justify-center">
               <img 
-                src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300&h=300&fit=crop" 
+                src="https://images.unsplash.com/photo-1616004667892-d348f7021b2b?w=300&h=300&fit=crop" 
                 alt="Dell Monitor" 
                 className="max-h-full max-w-full object-contain"
               />
@@ -124,7 +107,7 @@ const FrequentlyBoughtTogether = () => {
           <div className="relative border border-gray-200 p-4 rounded-md bg-gray-50">
             <div className="h-32 w-32 flex items-center justify-center">
               <img 
-                src="https://images.unsplash.com/photo-1527814050087-3793815479db?w=300&h=300&fit=crop" 
+                src="https://images.unsplash.com/photo-1588200908342-23b585c03e26?w=300&h=300&fit=crop" 
                 alt="HDMI Cable" 
                 className="max-h-full max-w-full object-contain"
               />

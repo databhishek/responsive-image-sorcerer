@@ -8,36 +8,10 @@ import BreadcrumbTrail from "@/components/BreadcrumbTrail";
 import ShopWithPoints from "@/components/ShopWithPoints";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { cricketBatData } from "@/data/cricketBat";
 
 const Index = () => {
   const [quantity, setQuantity] = useState(1);
-
-  const productData = {
-    id: "cricket-bat-1",
-    name: "Boldfit Cricket bat Full Size Plastic bat Tennis Cricket bat Turf Tennis bat Lightweight Fiber bat Hard Plastic bat Tournament Plastic Cricket bat Standard Size Cricket Bats for Adults Fiber bat",
-    price: 299,
-    mrp: 999,
-    discount: 70,
-    rating: 4.1,
-    reviews: 1645,
-    store: "Boldfit",
-    tag: "bat",
-    sales: "3K+ bought in past month",
-    fulfilled: true,
-    inStock: true,
-    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop",
-    delivery: {
-      free: true,
-      date: "Friday, 4 April",
-      fastestDate: "Tomorrow, 3 April",
-      timeRemaining: "12 hrs 20 mins",
-      location: "Mumbai 400017"
-    },
-    shipping: {
-      from: "Amazon",
-      by: "RetailEZ Pvt Ltd"
-    }
-  };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setQuantity(parseInt(e.target.value));
@@ -66,13 +40,13 @@ const Index = () => {
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10">
           {/* Left column - Product gallery */}
           <div className="lg:col-span-5 lg:row-span-2">
-            <ProductGallery />
+            <ProductGallery images={cricketBatData.images} />
           </div>
 
           {/* Middle column - Product details */}
           <div className="lg:col-span-7">
             <ProductDetails 
-              product={productData}
+              product={cricketBatData}
               quantity={quantity}
               onQuantityChange={handleQuantityChange}
               onAddToCart={handleAddToCart}
@@ -89,7 +63,16 @@ const Index = () => {
         
         {/* Shop with Points section */}
         <div className="mt-8 mb-12">
-          <ShopWithPoints />
+          <ShopWithPoints 
+            products={cricketBatData.relatedProducts} 
+            mainProduct={{
+              id: cricketBatData.id,
+              name: cricketBatData.name,
+              price: cricketBatData.price,
+              image: cricketBatData.images[0],
+              quantity: quantity
+            }}
+          />
         </div>
       </main>
     </div>
@@ -107,7 +90,7 @@ const FrequentlyBoughtTogether = () => {
           <div className="relative border border-gray-200 p-4 rounded-md bg-gray-50">
             <div className="h-32 w-32 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/3270669f-7df0-49b4-ab67-74b651a1ca3b.png" 
+                src="https://images.unsplash.com/photo-1595435742656-5272d0b3fa82?w=300&h=300&fit=crop" 
                 alt="Boldfit Cricket bat" 
                 className="max-h-full max-w-full object-contain"
               />
@@ -124,7 +107,7 @@ const FrequentlyBoughtTogether = () => {
           <div className="relative border border-gray-200 p-4 rounded-md bg-gray-50">
             <div className="h-32 w-32 flex items-center justify-center">
               <img 
-                src="https://m.media-amazon.com/images/I/61Vp4ze0KhL._SX522_.jpg" 
+                src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=300&h=300&fit=crop" 
                 alt="Boldfit Tennis Ball" 
                 className="max-h-full max-w-full object-contain"
               />

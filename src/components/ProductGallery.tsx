@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { Play, ZoomIn } from "lucide-react";
 
-const ProductGallery = () => {
+interface ProductGalleryProps {
+  images: string[];
+}
+
+const ProductGallery = ({ images }: ProductGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState(0);
-  
-  const images = [
-    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1586210579471-c0338f287a6e?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1616849534446-9e66e4860673?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1616849534446-9e66e4860673?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&h=600&fit=crop",
-  ];
 
   return (
     <div className="flex gap-4">
@@ -39,7 +35,7 @@ const ProductGallery = () => {
       <div className="relative bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center h-[400px] flex-1">
         <img
           src={images[selectedImage]}
-          alt="Dell Monitor"
+          alt="Product"
           className="max-h-full max-w-full object-contain"
         />
         <div className="absolute bottom-2 right-2 text-sm text-gray-500 flex items-center">

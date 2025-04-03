@@ -1,25 +1,41 @@
-import { Trash2 } from "lucide-react";
+import { Trash2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Cart = () => {
   const { items, updateQuantity, removeItem } = useCart();
   const navigate = useNavigate();
+  const availablePoints = 1500; // Same as in ShopWithPoints
 
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalPoints = items.reduce((sum, item) => sum + (item.pointsValue * item.quantity), 0);
   const total = subtotal;
+  
+  const isOverPoints = totalPoints > availablePoints;
 
   const handleProceedToBuy = () => {
-    navigate("/Checkout");
+    if (!isOverPoints) {
+      navigate("/Checkout");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-2xl font-bold mb-8">Shopping Cart</h1>
+        
+        {isOverPoints && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Your selected items require {totalPoints.toLocaleString()} points, but you only have {availablePoints.toLocaleString()} points available. 
+              Please remove some items or reduce quantities to proceed.
+            </AlertDescription>
+          </Alert>
+        )}
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Cart Items */}
@@ -67,14 +83,18 @@ const Cart = () => {
                       <div className="flex items-center justify-between">
                         <div className="text-sm">
                           {item.pointsValue > 0 ? (
-                            <span className="text-[#FF9900] font-medium">{item.pointsValue} points</span>
+                            <span className={`font-medium ${isOverPoints ? 'text-red-600' : 'text-[#FF9900]'}`}>
+                              {item.pointsValue} points
+                            </span>
                           ) : (
                             <span className="font-medium">₹{item.price.toLocaleString()}</span>
                           )}
                         </div>
                         <div className="text-sm font-medium">
                           {item.pointsValue > 0 ? (
-                            <span className="text-[#FF9900]">{item.pointsValue * item.quantity} points</span>
+                            <span className={`${isOverPoints ? 'text-red-600' : 'text-[#FF9900]'}`}>
+                              {item.pointsValue * item.quantity} points
+                            </span>
                           ) : (
                             <span>₹{(item.price * item.quantity).toLocaleString()}</span>
                           )}
@@ -101,7 +121,9 @@ const Cart = () => {
                 {totalPoints > 0 && (
                   <div className="flex justify-between text-sm">
                     <span>Points to be used</span>
-                    <span className="text-[#FF9900]">{totalPoints} points</span>
+                    <span className={`${isOverPoints ? 'text-red-600' : 'text-[#FF9900]'}`}>
+                      {totalPoints.toLocaleString()} / {availablePoints.toLocaleString()} points
+                    </span>
                   </div>
                 )}
                 
@@ -115,9 +137,14 @@ const Cart = () => {
               
               <Button 
                 onClick={handleProceedToBuy}
-                className="w-full bg-[#FFD814] hover:bg-[#F7CA00] text-black font-normal rounded-full py-2"
+                disabled={isOverPoints || items.length === 0}
+                className={`w-full font-normal rounded-full py-2 ${
+                  isOverPoints 
+                    ? 'bg-gray-300 hover:bg-gray-300 cursor-not-allowed' 
+                    : 'bg-[#FFD814] hover:bg-[#F7CA00]'
+                } text-black`}
               >
-                Proceed to Buy
+                {isOverPoints ? 'Insufficient Points' : 'Proceed to Buy'}
               </Button>
               
               <div className="mt-4 text-sm text-gray-600">

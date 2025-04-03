@@ -3,6 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useNavigate } from "react-router-dom";
+
+interface MainProduct {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
 
 interface PointsProduct {
   id: string;
@@ -14,39 +23,16 @@ interface PointsProduct {
   selected: boolean;
 }
 
-const ShopWithPoints = () => {
-  const { addItem } = useCart();
-  const [availablePoints, setAvailablePoints] = useState(1500);
-  const [products, setProducts] = useState<PointsProduct[]>([
-    {
-      id: "p1",
-      name: "Boldfit Cricket Batting Gloves",
-      description: "Premium quality batting gloves, perfect for both practice and matches",
-      price: 599,
-      pointsValue: 599,
-      image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=300&fit=crop",
-      selected: false
-    },
-    {
-      id: "p2",
-      name: "Boldfit Cricket Helmet",
-      description: "Protective cricket helmet with adjustable fitting and superior comfort",
-      price: 899,
-      pointsValue: 899,
-      image: "https://images.unsplash.com/photo-1580744066811-90a3fb52256c?w=400&h=300&fit=crop",
-      selected: false
-    },
-    {
-      id: "p3",
-      name: "Boldfit Cricket Wicket Keeping Gloves",
-      description: "Professional grade keeping gloves with enhanced grip and padding",
-      price: 749,
-      pointsValue: 749,
-      image: "https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=400&h=300&fit=crop",
-      selected: false
-    }
-  ]);
+interface ShopWithPointsProps {
+  products: PointsProduct[];
+  mainProduct: MainProduct;
+}
 
+const ShopWithPoints = ({ products: initialProducts, mainProduct }: ShopWithPointsProps) => {
+  const { addItem } = useCart();
+  const navigate = useNavigate();
+  const [availablePoints, setAvailablePoints] = useState(1500);
+  const [products, setProducts] = useState<PointsProduct[]>(initialProducts);
   const [totalPoints, setTotalPoints] = useState(0);
 
   const toggleProductSelection = (id: string) => {
@@ -81,6 +67,17 @@ const ShopWithPoints = () => {
   };
 
   const handleAddAllToCart = () => {
+    // First add the main product
+    addItem({
+      id: mainProduct.id,
+      name: mainProduct.name,
+      price: mainProduct.price,
+      pointsValue: 0,
+      image: mainProduct.image,
+      quantity: mainProduct.quantity
+    });
+
+    // Then add selected points products
     const selectedProducts = products.filter(p => p.selected);
     selectedProducts.forEach(product => {
       addItem({
@@ -92,6 +89,9 @@ const ShopWithPoints = () => {
         quantity: 1
       });
     });
+    
+    // Navigate to cart page after adding items
+    navigate("/Cart");
   };
 
   return (
